@@ -8,7 +8,7 @@ x-runtime:
   stats:
     output: "DATADOG"
     datadog:
-      address: "statsd:8126"
+      address: "statsd:8125"
       flushinterval: "10s"
   signals:
     installed:
