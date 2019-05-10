@@ -4,16 +4,13 @@ import (
 	"context"
 	"os"
 
-	serverfull "github.com/asecurityteam/serverfull/pkg"
-	serverfulldomain "github.com/asecurityteam/serverfull/pkg/domain"
+	"github.com/asecurityteam/serverfull"
 	"github.com/asecurityteam/settings"
-	"github.com/aws/aws-lambda-go/lambda"
 )
 
 func main() {
 	ctx := context.Background()
-	var _ lambda.Handler = nil // Placeholder to keep lambda imported. Delete after adding to the map.
-	handlers := map[string]serverfulldomain.Handler{
+	handlers := map[string]serverfull.Function{
 		// TODO: Register lambda functions here in the form of
 		// "name_or_arn": lambda.NewHandler(myHandler.Handle)
 	}
@@ -22,11 +19,8 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	rt, err := serverfull.NewStatic(ctx, source, handlers)
-	if err != nil {
-		panic(err.Error())
-	}
-	if err := rt.Run(); err != nil {
+	fetcher := &serverfull.StaticFetcher{Functions: handlers}
+	if err := serverfull.Start(ctx, source, fetcher); err != nil {
 		panic(err.Error())
 	}
 }
